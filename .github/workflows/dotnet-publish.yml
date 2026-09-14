@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Create Release
-      uses: ncipollo/release-action@v1
+      uses: ncipollo/release-action@v4
       with:
         allowUpdates: true
         token: ${{ secrets.GITHUB_TOKEN }}
@@ -30,7 +30,7 @@ jobs:
 
     steps:
     - name: Checkout
-      uses: actions/checkout@v2
+      uses: actions/checkout@v4
       with:
         fetch-depth: 0
 
@@ -40,7 +40,7 @@ jobs:
       shell: bash
 
     - name: Install .NET Core
-      uses: actions/setup-dotnet@v1
+      uses: actions/setup-dotnet@v4
       with:
         dotnet-version: 8.0.x
 
@@ -64,7 +64,7 @@ jobs:
         directory: 'releases/${{ matrix.release }}'
 
     - name: Publish Artifact
-      uses: ncipollo/release-action@v1
+      uses: ncipollo/release-action@v4
       with:
         allowUpdates: true
         omitBodyDuringUpdate: true
@@ -94,7 +94,7 @@ jobs:
       shell: bash
 
     - name: Install .NET Core
-      uses: actions/setup-dotnet@v1
+      uses: actions/setup-dotnet@v4
       with:
         dotnet-version: 8.0.x
 
@@ -118,7 +118,7 @@ jobs:
         directory: 'releases/${{ matrix.release }}'
 
     - name: Publish Artifact
-      uses: ncipollo/release-action@v1
+      uses: ncipollo/release-action@v4
       with:
         allowUpdates: true
         omitBodyDuringUpdate: true
@@ -138,7 +138,7 @@ jobs:
 
     steps:
     - name: Checkout
-      uses: actions/checkout@v2
+      uses: actions/checkout@v4
       with:
         fetch-depth: 0
 
@@ -148,7 +148,7 @@ jobs:
       shell: bash
 
     - name: Install .NET Core
-      uses: actions/setup-dotnet@v1
+      uses: actions/setup-dotnet@v4
       with:
         dotnet-version: 8.0.x
 
@@ -172,7 +172,7 @@ jobs:
         directory: 'releases/${{ matrix.release }}'
 
     - name: Publish Artifact
-      uses: ncipollo/release-action@v1
+      uses: ncipollo/release-action@v4
       with:
         allowUpdates: true
         omitBodyDuringUpdate: true
