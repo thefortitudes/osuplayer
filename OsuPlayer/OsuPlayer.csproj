@@ -52,6 +52,20 @@
         <PackageReference Include="TagLibSharp" Version="2.3.0" />
         <PackageReference Include="SkiaSharp" Version="2.88.8" />
     </ItemGroup>
+    <!--
+        The Founntain.OsuPlayer.NativeLibs package only ships the BASS dylibs under runtimes/osx-x64.
+        Those are universal binaries (x86_64 + arm64), but the .NET host never probes the osx-x64 folder
+        on Apple Silicon, so BASS fails to load. Copy them next to the app so they are found via the
+        application-directory probe when building on macOS (no RID) or publishing for osx-arm64.
+    -->
+    <ItemGroup Condition="'$(RuntimeIdentifier)' == 'osx-arm64' Or ('$(RuntimeIdentifier)' == '' And $([MSBuild]::IsOSPlatform('OSX')))">
+        <None Include="..\OsuPlayer.NativeLibs\runtimes\osx-x64\native\*.dylib">
+            <Link>%(Filename)%(Extension)</Link>
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+            <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+            <Visible>false</Visible>
+        </None>
+    </ItemGroup>
     <ItemGroup>
         <Folder Include="Resources" />
         <AvaloniaResource Include="Resources\**" />

@@ -46,7 +46,7 @@ public class SettingsViewModel : BaseViewModel
     public readonly IPlayer Player;
     private float _backgroundBlurRadius;
     private BackgroundMode _backgroundMode;
-    private List<OsuPlayerContributor>? _contributors;
+    // private List<OsuPlayerContributor>? _contributors;
     private string _currentAppTheme = _system;
 
     private bool _displayAudioVisualizer;
@@ -271,11 +271,11 @@ public class SettingsViewModel : BaseViewModel
         }
     }
 
-    public List<OsuPlayerContributor>? Contributors
-    {
-        get => _contributors;
-        set => this.RaiseAndSetIfChanged(ref _contributors, value);
-    }
+    // public List<OsuPlayerContributor>? Contributors
+    // {
+    //     get => _contributors;
+    //     set => this.RaiseAndSetIfChanged(ref _contributors, value);
+    // }
 
     public string Patchnotes
     {
@@ -672,7 +672,7 @@ public class SettingsViewModel : BaseViewModel
 
         Patchnotes = latestPatchNotes;
 
-        Contributors = await GitHub.GetContributers() ?? new List<OsuPlayerContributor>();
+        // Contributors = await GitHub.GetContributers() ?? new List<OsuPlayerContributor>();
     }
 
     private ThemeVariant? GetThemeVariant(string value)

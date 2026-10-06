@@ -5,3 +5,10 @@ riderModule.iml
 /_ReSharper.Caches/
 OsuPlayer.sln.DotSettings.user
 .name
+data/config.json
+.gitignore
+/logs
+data/eqPresets.json
+Library/Application Support/Microsoft/DeveloperTools/deviceid
+/releases
+.DS_Store

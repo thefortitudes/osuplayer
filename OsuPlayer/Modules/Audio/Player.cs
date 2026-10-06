@@ -1,4 +1,4 @@
-﻿using System.ComponentModel;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Threading.Tasks;
 using Nein.Extensions;
@@ -227,7 +227,7 @@ public class Player : IPlayer, IImportNotifications
     {
         _audioEngine.SetPlaybackSpeed(speed);
 
-        if (!_audioEngine.IsPlaying.Value) return;
+        if (!_audioEngine.IsPlaying.Value || CurrentSong.Value == null) return;
 
         var timestamp = TimeSpan.FromSeconds(_audioEngine.ChannelLength.Value * (1 - _audioEngine.PlaybackSpeed.Value) - _audioEngine.ChannelPosition.Value);
 
@@ -262,6 +262,8 @@ public class Player : IPlayer, IImportNotifications
 
     public void Play()
     {
+        if (CurrentSong.Value == null) return;
+
         _audioEngine.Play();
         _currentSongTimer.Start();
 
@@ -274,6 +276,8 @@ public class Player : IPlayer, IImportNotifications
 
     public void Pause()
     {
+        if (CurrentSong.Value == null) return;
+
         _audioEngine.Pause();
         _currentSongTimer.Stop();
 

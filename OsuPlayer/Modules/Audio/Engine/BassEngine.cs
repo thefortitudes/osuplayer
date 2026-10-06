@@ -1,4 +1,4 @@
-﻿using System.Diagnostics;
+using System.Diagnostics;
 using Avalonia.Threading;
 using ManagedBass;
 using ManagedBass.DirectX8;
@@ -181,10 +181,15 @@ public sealed class BassEngine : OsuPlayerService, IAudioEngine
     public void SetDevice(AudioDevice? audioDevice)
     {
         var audioDevices = GetAudioDevices().ToList();
-        var index = audioDevice == null ? -1 : audioDevices.IndexOf(audioDevices.FirstOrDefault(x => x.Driver == audioDevice.Driver));
+        var index = audioDevice == null
+            ? -1
+            : audioDevices.FindIndex(1, x => x.Driver == audioDevice.Driver && x.DeviceName == audioDevice.DeviceName);
+
+        if (index == -1 && audioDevice != null)
+            index = audioDevices.FindIndex(1, x => x.Driver == audioDevice.Driver);
 
         if (index == -1)
-            for (var i = 0; i < audioDevices.Count; i++)
+            for (var i = 1; i < audioDevices.Count; i++)
             {
                 var deviceInfo = audioDevices[i];
 

@@ -1,4 +1,4 @@
-﻿using System.Diagnostics;
+using System.Diagnostics;
 using Avalonia;
 using Avalonia.ReactiveUI;
 using Nein.Extensions;
@@ -26,6 +26,9 @@ internal static class Program
     {
         try
         {
+            if (OperatingSystem.IsMacOS() && Directory.GetCurrentDirectory() == "/")
+                Directory.SetCurrentDirectory(AppContext.BaseDirectory);
+
             var builder = BuildAvaloniaApp();
 
             Register(Locator.CurrentMutable, Locator.Current);
@@ -38,7 +41,7 @@ internal static class Program
             // If we debug the application and an unhandled exception is thrown,
             // we need to initiate a break for the debugger, so we can debug the exception.
             // Because we handle it above, the application just closes and logs it.
-            // This avoids opening the logs and we can debug it directly.
+            // This avoids opening the logs and, we can debug it directly.
             Debugger.Break();
 #endif
 
@@ -46,13 +49,41 @@ internal static class Program
             UnhandledExceptionHandler.HandleException(ex);
 
             // Start the CrashHandler to display the error message to the user
-            var processStartInfo = new ProcessStartInfo("dotnet", "OsuPlayer.CrashHandler.dll")
+            var crashHandlerDll = Path.Combine(AppContext.BaseDirectory, "OsuPlayer.CrashHandler.dll");
+            var processStartInfo = new ProcessStartInfo(GetDotnetHostPath(), $"\"{crashHandlerDll}\"")
             {
-                CreateNoWindow = true
+                CreateNoWindow = true,
+                WorkingDirectory = AppContext.BaseDirectory
             };
 
             Process.Start(processStartInfo);
         }
+    }
+
+    /// <summary>
+    /// Resolves the path to the dotnet host executable. Falls back to "dotnet" (resolved via PATH)
+    /// if it can't be determined, e.g. when dotnet is installed in a non-default location like ~/.dotnet on macOS.
+    /// </summary>
+    private static string GetDotnetHostPath()
+    {
+        var hostName = OperatingSystem.IsWindows() ? "dotnet.exe" : "dotnet";
+
+        // Launched via `dotnet OsuPlayer.dll`: the current process is the host itself.
+        var processPath = Environment.ProcessPath;
+        if (processPath != null && Path.GetFileName(processPath).Equals(hostName, StringComparison.OrdinalIgnoreCase))
+            return processPath;
+
+        // Framework-dependent apps: runtime dir is <dotnet root>/shared/Microsoft.NETCore.App/<version>/
+        var runtimeDir = System.Runtime.InteropServices.RuntimeEnvironment.GetRuntimeDirectory();
+        var candidate = Path.GetFullPath(Path.Combine(runtimeDir, "..", "..", "..", hostName));
+        if (File.Exists(candidate))
+            return candidate;
+
+        var dotnetRoot = Environment.GetEnvironmentVariable("DOTNET_ROOT");
+        if (!string.IsNullOrEmpty(dotnetRoot) && File.Exists(Path.Combine(dotnetRoot, hostName)))
+            return Path.Combine(dotnetRoot, hostName);
+
+        return "dotnet";
     }
 
     // Avalonia configuration, don't remove; also used by visual designer.
